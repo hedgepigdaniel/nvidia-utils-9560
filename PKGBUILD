@@ -3,10 +3,11 @@
 # Maintainer: Thomas Baechler <thomas@archlinux.org>
 # Contributor: James Rayner <iphitus@gmail.com>
 
-pkgbase=nvidia-utils
-pkgname=('nvidia-utils' 'opencl-nvidia')
-pkgver=378.13
-pkgrel=6
+pkgbase=nvidia-utils-9560
+pkgname=('nvidia-utils-9560' 'opencl-nvidia-9560')
+provides=('nvidia-utils=375.39')
+pkgver=375.39
+pkgrel=1
 arch=('i686' 'x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -15,8 +16,8 @@ source=('nvidia-drm-outputclass.conf')
 source_i686=("http://us.download.nvidia.com/XFree86/Linux-x86/${pkgver}/NVIDIA-Linux-x86-${pkgver}.run")
 source_x86_64=("http://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/NVIDIA-Linux-x86_64-${pkgver}-no-compat32.run")
 md5sums=('a433deeb5f9cc661e537f42bde2f1df7')
-md5sums_i686=('dd1077750af9a067739ec291fb24175f')
-md5sums_x86_64=('fe4d25b19a780a690cafc8e3b7c0113f')
+md5sums_i686=('9247d5eb9df58bb7755c9060ef5d103d')
+md5sums_x86_64=('3541e67b444f020b89bcad8334be6d65')
 
 [[ "$CARCH" = "i686" ]] && _pkg="NVIDIA-Linux-x86-${pkgver}"
 [[ "$CARCH" = "x86_64" ]] && _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
@@ -37,11 +38,11 @@ prepare() {
     bsdtar -xf nvidia-persistenced-init.tar.bz2
 }
 
-package_opencl-nvidia() {
+package_opencl-nvidia-9560() {
     pkgdesc="OpenCL implemention for NVIDIA"
     depends=('zlib')
     optdepends=('opencl-headers: headers necessary for OpenCL development')
-    provides=('opencl-driver')
+    provides=('opencl-driver' 'opencl-nvidia=375.39')
     cd "${_pkg}"
 
     # OpenCL
@@ -55,14 +56,14 @@ package_opencl-nvidia() {
     ln -s nvidia "${pkgdir}/usr/share/licenses/opencl-nvidia"
 }
 
-package_nvidia-utils() {
+package_nvidia-utils-9560() {
     pkgdesc="NVIDIA drivers utilities"
     depends=('xorg-server' 'libglvnd')
     optdepends=('nvidia-settings: configuration tool'
                 'xorg-server-devel: nvidia-xconfig'
                 'opencl-nvidia: OpenCL support')
     conflicts=('nvidia-libgl')
-    provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl')
+    provides=('vulkan-driver' 'opengl-driver' 'nvidia-libgl' 'nvidia-utils=375.39')
     replaces=('nvidia-libgl')
     install="${pkgname}.install"
 
@@ -79,11 +80,6 @@ package_nvidia-utils() {
     install -D -m755 "libGLX_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/libGLX_nvidia.so.${pkgver}"
     # now in mesa driver
     #ln -s "libGLX_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/libGLX_indirect.so.0"
-
-    # Wayland stuff
-    install -D -m755 "libnvidia-egl-wayland.so.1.0.1" "${pkgdir}/usr/lib/libnvidia-egl-wayland.so.1.0.1"
-    ln -s "libnvidia-egl-wayland.so.1.0.1" "${pkgdir}/usr/lib/libnvidia-egl-wayland.so.1"
-    install -D -m644 "10_nvidia_wayland.json" "${pkgdir}/usr/share/egl/egl_external_platform.d/10_nvidia_wayland.json"
 
     # OpenGL libraries
     install -D -m755 "libEGL_nvidia.so.${pkgver}" "${pkgdir}/usr/lib/libEGL_nvidia.so.${pkgver}"
